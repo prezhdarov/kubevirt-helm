@@ -1,0 +1,102 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: virt-operator
+  namespace: {{ .Release.Namespace }}
+  labels:
+    kubevirt.io: virt-operator
+    {{- include "kubevirt-operator.labels" . | nindent 4 }}     
+spec:
+  replicas: {{ default .Values.replicaCount "2" }}
+  selector:
+    matchLabels:
+      kubevirt.io: virt-operator
+      {{- include "kubevirt-operator.selectorLabels" . | nindent 6 }}         
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        kubevirt.io: virt-operator
+        name: virt-operator
+        prometheus.kubevirt.io: "true"
+        {{- include "kubevirt-operator.labels" . | nindent 8 }}           
+      name: virt-operator
+    spec:
+      serviceAccountName: {{ include "kubevirt-operator.serviceAccountName" . }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}    
+      containers:
+      - name: virt-operator
+        image: quay.io/kubevirt/virt-operator:v{{ .Chart.AppVersion }}
+        imagePullPolicy: IfNotPresent       
+        command:
+        - virt-operator
+        args:
+        - --port
+        - "8443"
+        - -v
+        - "2"
+        env:
+        - name: VIRT_OPERATOR_IMAGE
+          value: quay.io/kubevirt/virt-operator:v{{ .Chart.AppVersion }}
+        - name: WATCH_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.annotations['olm.targetNamespaces']
+        - name: KUBEVIRT_VERSION
+          value: v1.3.1
+        ports:
+        - containerPort: 8443
+          name: metrics
+          protocol: TCP
+        - containerPort: 8444
+          name: webhooks
+          protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /metrics
+            port: 8443
+            scheme: HTTPS
+          initialDelaySeconds: 5
+          timeoutSeconds: 10
+        {{- with .Values.resources }}          
+        resources:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          seccompProfile:
+            type: RuntimeDefault
+        volumeMounts:
+        - mountPath: /etc/virt-operator/certificates
+          name: kubevirt-operator-certs
+          readOnly: true
+        - mountPath: /profile-data
+          name: profile-data
+      priorityClassName: kubevirt-cluster-critical
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 6 }}
+      {{- end }}
+      volumes:
+      - name: kubevirt-operator-certs
+        secret:
+          optional: true
+          secretName: kubevirt-operator-certs
+      - emptyDir: {}
+        name: profile-data

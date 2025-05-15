@@ -1,0 +1,44 @@
+---
+name: helm-build
+permissions:
+  packages: write
+  contents: read
+on:
+  push:
+    tags:
+    - '*-v[0-9]+.[0-9]+.[0-9]+'
+env:
+  TAG: ${{ github.ref_name }}
+jobs:
+
+  build-helm:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Extract chart name and version
+        id: extract
+        run: |
+          CHART_NAME="${TAG%-v*}"
+          IMAGE_TAG="v${TAG#*-v}"
+
+          echo "CHART_NAME=$CHART_NAME" >> $GITHUB_ENV
+          echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
+
+      - name: helm lint
+        run: |
+          helm lint charts/$CHART_NAME
+      
+      - name: helm login
+        run: |
+          echo ${{ secrets.GITHUB_TOKEN }} | helm registry login ghcr.io -u $ --password-stdin
+      
+      - name: helm package
+        run: |
+          helm package charts/$CHART_NAME --version $IMAGE_TAG
+
+      - name: helm push
+        if: ${{ github.event_name == 'push' }}
+        run: |
+          helm push $CHART_NAME-$IMAGE_TAG.tgz oci://ghcr.io/${{ github.repository_owner }}
