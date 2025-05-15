@@ -1,0 +1,23 @@
+---
+apiVersion: kubevirt.io/v1
+kind: KubeVirt
+metadata:
+  name: kubevirt
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "kubevirt-operator.labels" . | nindent 4 }}
+spec:
+  certificateRotateStrategy: {}
+  configuration:
+    developerConfiguration:  
+    {{- if gt (len .Values.featureGates) 0 }}
+      featureGates:      
+        {{- with .Values.featureGates }}
+        {{- toYaml . | nindent 6 }}
+        {{- end }}
+    {{- else }}
+      featureGates: []
+    {{- end }}
+  customizeComponents: {}
+  imagePullPolicy: IfNotPresent
+  workloadUpdateStrategy: {}

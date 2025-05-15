@@ -1,0 +1,31 @@
+fullnameOverride: ""
+serviceAccountName: ""
+replicaCount: 2
+
+featureGates: []
+
+resources: 
+  requests:
+    cpu: 10m
+    memory: 450Mi
+
+nodeSelector:
+  kubernetes.io/os: linux
+
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+    - podAffinityTerm:
+        labelSelector:
+          matchExpressions:
+          - key: kubevirt.io
+            operator: In
+            values:
+            - virt-operator
+        topologyKey: kubernetes.io/hostname
+      weight: 1
+
+tolerations:
+- key: CriticalAddonsOnly
+  operator: Exists
+
