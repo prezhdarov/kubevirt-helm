@@ -1,0 +1,28 @@
+---
+apiVersion: cdi.kubevirt.io/v1beta1
+kind: CDI
+metadata:
+  name: cdi
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "kubevirt-operator.labels" . | nindent 4 }}
+spec:
+  config:
+  {{- if gt (len .Values.featureGates) 0 }}
+    featureGates:      
+      {{- with .Values.featureGates }}
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
+  {{- else }}
+    featureGates: []
+  {{- end }}
+  imagePullPolicy: IfNotPresent
+  infra:
+    nodeSelector:
+      kubernetes.io/os: linux
+    tolerations:
+    - key: CriticalAddonsOnly
+      operator: Exists
+  workload:
+    nodeSelector:
+      kubernetes.io/os: linux
