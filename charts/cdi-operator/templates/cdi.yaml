@@ -5,7 +5,7 @@ metadata:
   name: cdi
   namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "kubevirt-operator.labels" . | nindent 4 }}
+    {{- include "cdi-operator.labels" . | nindent 4 }}
 spec:
   config:
   {{- if gt (len .Values.featureGates) 0 }}
