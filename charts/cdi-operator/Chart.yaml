@@ -2,5 +2,5 @@ apiVersion: v2
 name: cdi-operator
 description: A Helm chart top deploy CDI Operator
 type: application
-version: 1.60.5
-appVersion: 1.60.5
+version: 1.61.5
+appVersion: 1.61.5

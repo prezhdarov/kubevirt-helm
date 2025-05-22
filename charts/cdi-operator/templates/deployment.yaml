@@ -20,6 +20,8 @@ spec:
     type: RollingUpdate  
   template:
     metadata:
+      annotations:
+        openshift.io/required-scc: restricted-v2    
       labels:
         cdi.kubevirt.io: cdi-operator
         name: cdi-operator
