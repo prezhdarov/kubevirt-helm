@@ -24,12 +24,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Extract chart tag
-        id: extract
+      - name: Get 'latest' chart tag
         if: ${{ github.ref == 'refs/heads/master' }}
         run: |
           IMAGE_TAG="latest"
           echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
+      - name: Get 'dev' chart tag          
         if: ${{ github.ref == 'refs/heads/dev' }}
         run: |
           IMAGE_TAG="dev"
