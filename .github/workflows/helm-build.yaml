@@ -37,7 +37,7 @@ jobs:
       - name: helm lint
         run: |
           for chart in charts/*/; do
-            helm lint charts/$chart
+            helm lint $chart
           done        
       - name: helm login
         run: |
@@ -45,7 +45,7 @@ jobs:
       - name: helm package
         run: |
           for chart in charts/*/; do
-            helm package charts/$chart --version $IMAGE_TAG
+            helm package $chart --version $IMAGE_TAG
           done         
       - name: helm push
         if: ${{ github.event_name == 'push' }}
