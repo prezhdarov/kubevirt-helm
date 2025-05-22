@@ -2,7 +2,8 @@ fullnameOverride: ""
 serviceAccountName: ""
 replicaCount: 2
 
-featureGates: []
+featureGates:
+- HonorWaitForFirstConsumer
 
 resources: 
   requests:
