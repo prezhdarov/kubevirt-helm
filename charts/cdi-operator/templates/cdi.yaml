@@ -8,6 +8,10 @@ metadata:
     {{- include "cdi-operator.labels" . | nindent 4 }}
 spec:
   config:
+  {{- with .Values.podResourceRequirements }}
+    podResourceRequirements:      
+      {{- toYaml . | nindent 6 }}
+  {{- end }}  
   {{- if gt (len .Values.featureGates) 0 }}
     featureGates:      
       {{- with .Values.featureGates }}

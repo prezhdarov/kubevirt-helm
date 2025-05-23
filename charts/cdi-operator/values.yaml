@@ -1,9 +1,12 @@
 fullnameOverride: ""
 serviceAccountName: ""
 replicaCount: 2
+revisionHistoryLimit: 2
 
 featureGates:
 - HonorWaitForFirstConsumer
+
+podResourceRequirements: {}
 
 resources: 
   requests:

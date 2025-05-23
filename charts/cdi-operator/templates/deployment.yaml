@@ -12,6 +12,7 @@ metadata:
     {{- include "cdi-operator.labels" . | nindent 4 }}     
 spec:
   replicas: {{ default .Values.replicaCount "1" }}
+  revisionHistoryLimit: {{ default .Values.revisionHistoryLimit "1" }}
   selector:
     matchLabels:
       name: cdi-operator
