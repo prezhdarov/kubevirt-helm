@@ -6,18 +6,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "kubevirt-operator.labels" . | nindent 4 }}
+{{- with .Values.config }}          
 spec:
-  certificateRotateStrategy: {}
-  configuration:
-    developerConfiguration:  
-    {{- if gt (len .Values.featureGates) 0 }}
-      featureGates:      
-        {{- with .Values.featureGates }}
-        {{- toYaml . | nindent 6 }}
-        {{- end }}
-    {{- else }}
-      featureGates: []
-    {{- end }}
-  customizeComponents: {}
-  imagePullPolicy: IfNotPresent
-  workloadUpdateStrategy: {}
+{{- toYaml . | nindent 2 }}
+{{- end }}
