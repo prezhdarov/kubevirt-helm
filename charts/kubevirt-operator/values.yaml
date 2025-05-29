@@ -2,7 +2,14 @@ fullnameOverride: ""
 serviceAccountName: ""
 replicaCount: 2
 
-featureGates: []
+config:
+  imagePullPolicy: IfNotPresent
+  configuration:
+    developerConfiguration:
+      featureGates: []
+  certificateRotateStrategy: {}
+  customizeComponents: {}
+  workloadUpdateStrategy: {}
 
 resources: 
   requests:
