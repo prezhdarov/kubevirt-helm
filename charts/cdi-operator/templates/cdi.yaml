@@ -4,6 +4,8 @@ kind: CDI
 metadata:
   name: cdi
   namespace: {{ .Release.Namespace }}
+  annotations:
+    helm.sh/resource-policy: keep
   labels:
     {{- include "cdi-operator.labels" . | nindent 4 }}
 spec:
