@@ -4,8 +4,10 @@ kind: KubeVirt
 metadata:
   name: kubevirt
   namespace: {{ .Release.Namespace }}
-  annotations:
+  {{- if .Values.crds.keep }}
+  annotations:  
     helm.sh/resource-policy: keep
+  {{- end }}
   labels:
     {{- include "kubevirt-operator.labels" . | nindent 4 }}
 {{- with .Values.config }}          
