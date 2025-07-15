@@ -3,10 +3,27 @@ serviceAccountName: ""
 replicaCount: 2
 revisionHistoryLimit: 2
 
-featureGates:
-- HonorWaitForFirstConsumer
+crds:
+  # Install and upgrade CRDs from normal template. If false crds will be installed according to helm rules - i.e. will not be installed :D 
+  install: true
+  # Keep CRDs after uninstall of this application. This will also keep the objects created with these CRDs. 
+  keep: true
 
-podResourceRequirements: {}
+config:
+  imagePullPolicy: IfNotPresent
+  customizeComponents: {}
+  config:
+    featureGates: {}
+    podResourceRequirements: {}
+  infra:
+    nodeSelector:
+      kubernetes.io/os: linux
+    tolerations:
+    - key: CriticalAddonsOnly
+      operator: Exists
+  workload:
+    nodeSelector:
+      kubernetes.io/os: linux
 
 resources: 
   requests:

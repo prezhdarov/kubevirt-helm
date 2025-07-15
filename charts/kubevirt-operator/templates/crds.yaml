@@ -1,0 +1,22 @@
+{{- if .Values.crds.install }}
+  {{- $rawContent := .Files.Get "crds.yaml" }}
+  {{- $annotations := include "kubevirt-operator.crds.annotations" . | fromYaml }}
+  {{- $labels := include "kubevirt-operator.labels" . | fromYaml }}
+
+  {{- range $doc := $rawContent | splitList "---" }}
+    {{- if $doc }}
+      {{- $crd := $doc | fromYaml }}
+      {{- if $crd }}
+        {{- /* Merge metadata (preserve existing) */}}
+        {{- $existingMetadata := $crd.metadata | default dict }}
+        {{- $newMetadata := dict 
+            "annotations" (merge ($existingMetadata.annotations | default dict) $annotations)
+            "labels" (merge ($existingMetadata.labels | default dict) $labels)
+        }}
+        {{- $updatedCrd := mergeOverwrite (deepCopy $crd) (dict "metadata" $newMetadata) }}
+---
+        {{- $updatedCrd | toYaml | nindent 0 }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+{{- end }}

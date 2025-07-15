@@ -2,6 +2,12 @@ fullnameOverride: ""
 serviceAccountName: ""
 replicaCount: 2
 
+crds:
+  # Install and upgrade CRDs from normal template. If false crds will be installed according to helm rules - i.e. will not be installed :D 
+  install: true
+  # Keep CRDs after uninstall of this application. This will also keep the objects created with these CRDs. 
+  keep: true
+
 config:
   imagePullPolicy: IfNotPresent
   configuration:

@@ -4,31 +4,13 @@ kind: CDI
 metadata:
   name: cdi
   namespace: {{ .Release.Namespace }}
-  annotations:
+  {{- if .Values.crds.keep }}
+  annotations:  
     helm.sh/resource-policy: keep
+  {{- end }}
   labels:
     {{- include "cdi-operator.labels" . | nindent 4 }}
+{{- with .Values.config }}          
 spec:
-  config:
-  {{- with .Values.podResourceRequirements }}
-    podResourceRequirements:      
-      {{- toYaml . | nindent 6 }}
-  {{- end }}  
-  {{- if gt (len .Values.featureGates) 0 }}
-    featureGates:      
-      {{- with .Values.featureGates }}
-      {{- toYaml . | nindent 6 }}
-      {{- end }}
-  {{- else }}
-    featureGates: []
-  {{- end }}
-  imagePullPolicy: IfNotPresent
-  infra:
-    nodeSelector:
-      kubernetes.io/os: linux
-    tolerations:
-    - key: CriticalAddonsOnly
-      operator: Exists
-  workload:
-    nodeSelector:
-      kubernetes.io/os: linux
+{{- toYaml . | nindent 2 }}
+{{- end }}
