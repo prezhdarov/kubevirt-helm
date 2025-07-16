@@ -1,6 +1,10 @@
 apiVersion: v2
 name: kubevirt-operator
-description: A Helm chart top deploy KubeVirt Operator
+description: KubeVirt Operator
 type: application
 version: 1.5.2
 appVersion: 1.5.2
+dependencies:
+- name: crds
+  version: "0.0.*"
+  condition: crds.plain

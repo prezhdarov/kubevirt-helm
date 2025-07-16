@@ -1,0 +1,1 @@
+# A subchart stores kubevirt operator CRDs
