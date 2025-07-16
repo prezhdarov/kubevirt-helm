@@ -1,0 +1,1 @@
+# A subchart stores cdi operator CRDs

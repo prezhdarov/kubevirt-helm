@@ -3,10 +3,11 @@
   {{- $annotations := include "cdi-operator.crds.annotations" . | fromYaml }}
   {{- $labels := include "cdi-operator.labels" . | fromYaml }}
 
-  {{- range $doc := $rawContent | splitList "---" }}
+  {{- range $doc := $rawContent | splitList "\n---" }}
     {{- if $doc }}
       {{- $crd := $doc | fromYaml }}
       {{- if $crd }}
+        {{- /* Merge metadata (preserve existing) */}}      
         {{- $existingMetadata := $crd.metadata | default dict }}
         {{- $newMetadata := dict 
             "annotations" (merge ($existingMetadata.annotations | default dict) $annotations)

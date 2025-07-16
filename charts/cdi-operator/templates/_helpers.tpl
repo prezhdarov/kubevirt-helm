@@ -62,6 +62,9 @@ Create unified annotations for crds
 */}}
 {{- define "cdi-operator.crds.annotations" -}}
 {{- $Release :=(.helm).Release | default .Release -}}
+{{- if .Values.crds.keep }}
+helm.sh/resource-policy: keep
+{{- end }}
 meta.helm.sh/release-namespace: {{ $Release.Namespace }}
 meta.helm.sh/release-name: {{ $Release.Name }}
 {{- end -}}
