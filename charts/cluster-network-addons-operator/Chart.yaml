@@ -4,3 +4,7 @@ description: A Helm chart top deploy Cluster Network Addons Operator
 type: application
 version: 0.99.0
 appVersion: 0.99.0
+dependencies:
+- name: crds
+  version: "0.0.*"
+  condition: crds.plain

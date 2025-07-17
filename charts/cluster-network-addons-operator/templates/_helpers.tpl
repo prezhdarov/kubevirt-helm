@@ -56,3 +56,15 @@ Create the name of the service account to use
 {{- define "cluster-network-addons-operator.serviceAccountName" -}}
 {{- default (include "cluster-network-addons-operator.fullname" .) .Values.serviceAccountName }}
 {{- end }}
+
+{{/*
+Create unified annotations for crds
+*/}}
+{{- define "cluster-network-addons-operator.crds.annotations" -}}
+{{- $Release :=(.helm).Release | default .Release -}}
+{{- if .Values.crds.keep }}
+helm.sh/resource-policy: keep
+{{- end }}
+meta.helm.sh/release-namespace: {{ $Release.Namespace }}
+meta.helm.sh/release-name: {{ $Release.Name }}
+{{- end -}}

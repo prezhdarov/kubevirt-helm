@@ -1,0 +1,1 @@
+# A subchart stores cluster network addons operator CRDs
