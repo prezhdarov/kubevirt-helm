@@ -1,9 +1,9 @@
-{{- if .Values.crds.install }}
+{{- if and .Values.crds.enabled (not .Values.crds.plain ) }}
   {{- $rawContent := .Files.Get "crds.yaml" }}
   {{- $annotations := include "kubevirt-operator.crds.annotations" . | fromYaml }}
   {{- $labels := include "kubevirt-operator.labels" . | fromYaml }}
 
-  {{- range $doc := $rawContent | splitList "---" }}
+  {{- range $doc := $rawContent | splitList "\n---" }}
     {{- if $doc }}
       {{- $crd := $doc | fromYaml }}
       {{- if $crd }}

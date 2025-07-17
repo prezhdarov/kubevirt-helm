@@ -4,18 +4,11 @@ replicaCount: 2
 
 crds:
   # Install and upgrade CRDs from normal template. If false crds will be installed according to helm rules - i.e. will not be installed :D 
-  install: true
+  enabled: true
+  # -- check if plain or templated CRDs should be created.
+  plain: false  
   # Keep CRDs after uninstall of this application. This will also keep the objects created with these CRDs. 
   keep: true
-
-config:
-  imagePullPolicy: IfNotPresent
-  configuration:
-    developerConfiguration:
-      featureGates: []
-  certificateRotateStrategy: {}
-  customizeComponents: {}
-  workloadUpdateStrategy: {}
 
 resources: 
   requests:
