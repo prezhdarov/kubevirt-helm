@@ -3,6 +3,14 @@ serviceAccountName: ""
 replicaCount: 2
 revisionHistoryLimit: 2
 
+crds:
+  # Install and upgrade CRDs from normal template. If false crds will be installed according to helm rules - i.e. will not be installed :D 
+  enabled: true
+  # -- check if plain or templated CRDs should be created.
+  plain: false  
+  # Keep CRDs after uninstall of this application. This will also keep the objects created with these CRDs. 
+  keep: true
+
 resources: 
   requests:
     cpu: 50m
