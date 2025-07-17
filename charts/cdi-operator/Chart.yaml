@@ -7,4 +7,4 @@ appVersion: 1.62.0
 dependencies:
 - name: crds
   version: "0.0.*"
-  condition: crds.install == False
+  condition: crds.plain
