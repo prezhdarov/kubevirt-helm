@@ -11,22 +11,6 @@ crds:
   # Keep CRDs after uninstall of this application. This will also keep the objects created with these CRDs. 
   keep: true
 
-config:
-  imagePullPolicy: IfNotPresent
-  customizeComponents: {}
-  config:
-    featureGates: {}
-    podResourceRequirements: {}
-  infra:
-    nodeSelector:
-      kubernetes.io/os: linux
-    tolerations:
-    - key: CriticalAddonsOnly
-      operator: Exists
-  workload:
-    nodeSelector:
-      kubernetes.io/os: linux
-
 resources: 
   requests:
     cpu: 100m
