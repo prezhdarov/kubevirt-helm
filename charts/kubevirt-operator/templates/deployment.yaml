@@ -94,7 +94,6 @@ spec:
         - mountPath: /profile-data
           name: profile-data
       priorityClassName: kubevirt-cluster-critical
-      terminationMessagePolicy: FallbackToLogsOnError
       securityContext:
         runAsNonRoot: true
         seccompProfile:
