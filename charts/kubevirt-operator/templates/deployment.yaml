@@ -54,7 +54,7 @@ spec:
             fieldRef:
               fieldPath: metadata.annotations['olm.targetNamespaces']
         - name: KUBEVIRT_VERSION
-          value: v1.3.1
+          value: v{{ .Chart.AppVersion }}
         ports:
         - containerPort: 8443
           name: metrics
@@ -62,6 +62,13 @@ spec:
         - containerPort: 8444
           name: webhooks
           protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /metrics
+            port: 8443
+            scheme: HTTPS
+          initialDelaySeconds: 5
+          timeoutSeconds: 10          
         readinessProbe:
           httpGet:
             path: /metrics
@@ -87,6 +94,7 @@ spec:
         - mountPath: /profile-data
           name: profile-data
       priorityClassName: kubevirt-cluster-critical
+      terminationMessagePolicy: FallbackToLogsOnError
       securityContext:
         runAsNonRoot: true
         seccompProfile:
