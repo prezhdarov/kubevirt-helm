@@ -55,7 +55,7 @@ spec:
         - name: OVS_CNI_IMAGE
           value: ghcr.io/k8snetworkplumbingwg/ovs-cni-plugin@sha256:435f374b434b3bc70a5cfaba0011fdcf5f433d96b98b06d29306cbd8db3a8c21
         - name: KUBEMACPOOL_IMAGE
-          value: quay.io/kubevirt/kubemacpool@sha256:1cccec2d349be74a6c089f8331c46eb0a6adcf53437ae709f142f07fb3617515
+          value: quay.io/kubevirt/kubemacpool@sha256:205a61e62a5d0090cbc7147c7e24f678878e5e04326b59b0b44a73639838a618
         - name: MACVTAP_CNI_IMAGE
           value: quay.io/kubevirt/macvtap-cni@sha256:10e631dea111c070e67b03ab1fdd5563eb95fb3f14959ffc66386cdf215133c9
         - name: KUBE_RBAC_PROXY_IMAGE

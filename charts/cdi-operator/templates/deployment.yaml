@@ -68,7 +68,7 @@ spec:
           value: IfNotPresent
         - name: MONITORING_NAMESPACE
         ports:
-        - containerPort: 8080
+        - containerPort: 8443
           name: metrics
           protocol: TCP
         {{- with .Values.resources }}          
