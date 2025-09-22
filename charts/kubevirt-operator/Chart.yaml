@@ -2,8 +2,8 @@ apiVersion: v2
 name: kubevirt-operator
 description: KubeVirt Operator
 type: application
-version: 1.6.0
-appVersion: 1.6.0
+version: 1.6.1
+appVersion: 1.6.1
 dependencies:
 - name: crds
   version: "0.0.*"
