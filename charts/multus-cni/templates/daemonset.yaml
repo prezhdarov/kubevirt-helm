@@ -22,7 +22,7 @@ spec:
       hostPID: true
       initContainers:
       - name: install-multus-binary
-        image: ghcr.io/k8snetworkplumbingwg/multus-cni:v{{ .Chart.AppVersion }}
+        image: ghcr.io/k8snetworkplumbingwg/multus-cni:{{ printf "v%s-thick" .Chart.AppVersion }}
         command:
         - "sh"
         - "-c"
@@ -40,7 +40,7 @@ spec:
         terminationMessagePolicy: FallbackToLogsOnError      
       containers:
       - name: kube-multus
-        image: ghcr.io/k8snetworkplumbingwg/multus-cni:v{{ .Chart.AppVersion }}
+        image: ghcr.io/k8snetworkplumbingwg/multus-cni:{{ printf "v%s-thick" .Chart.AppVersion }}
         command:
         - /usr/src/multus-cni/bin/multus-daemon
         env:
