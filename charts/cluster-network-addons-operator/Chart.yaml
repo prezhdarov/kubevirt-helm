@@ -2,8 +2,8 @@ apiVersion: v2
 name: cluster-network-addons-operator
 description: A Helm chart top deploy Cluster Network Addons Operator
 type: application
-version: 0.99.2
-appVersion: 0.99.2
+version: 0.100.2
+appVersion: 0.100.2
 dependencies:
 - name: crds
   version: "0.0.*"

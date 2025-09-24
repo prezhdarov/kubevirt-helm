@@ -2,7 +2,7 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: {{ include "kubevirt-operator.fullname" . }}-rolebinding
+  name: {{ include "kubevirt-operator.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
     kubevirt.io: ""

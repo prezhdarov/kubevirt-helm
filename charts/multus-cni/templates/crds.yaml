@@ -1,0 +1,22 @@
+{{- if and .Values.crds.enabled ( not .Values.crds.plain ) }}
+  {{- $rawContent := .Files.Get "crds.yaml" }}
+  {{- $annotations := include "multus-cni.crds.annotations" . | fromYaml }}
+  {{- $labels := include "multus-cni.labels" . | fromYaml }}
+
+  {{- range $doc := $rawContent | splitList "\n---" }}
+    {{- if $doc }}
+      {{- $crd := $doc | fromYaml }}
+      {{- if $crd }}
+        {{- /* Merge metadata (preserve existing) */}}      
+        {{- $existingMetadata := $crd.metadata | default dict }}
+        {{- $newMetadata := dict 
+            "annotations" (merge ($existingMetadata.annotations | default dict) $annotations)
+            "labels" (merge ($existingMetadata.labels | default dict) $labels)
+        }}
+        {{- $updatedCrd := mergeOverwrite (deepCopy $crd) (dict "metadata" $newMetadata) }}
+---
+        {{- $updatedCrd | toYaml | nindent 0 }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+{{- end }}

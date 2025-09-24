@@ -2,16 +2,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: virt-operator
+  name: {{ include "kubevirt-operator.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    kubevirt.io: virt-operator
+    kubevirt.io: {{ include "kubevirt-operator.fullname" . }}
     {{- include "kubevirt-operator.labels" . | nindent 4 }}     
 spec:
   replicas: {{ default .Values.replicaCount "2" }}
   selector:
     matchLabels:
-      kubevirt.io: virt-operator
+      kubevirt.io: {{ include "kubevirt-operator.fullname" . }}
       {{- include "kubevirt-operator.selectorLabels" . | nindent 6 }}         
   strategy:
     type: RollingUpdate
@@ -20,11 +20,11 @@ spec:
       annotations:
         openshift.io/required-scc: restricted-v2    
       labels:
-        kubevirt.io: virt-operator
-        name: virt-operator
+        kubevirt.io: {{ include "kubevirt-operator.fullname" . }}
+        name: {{ include "kubevirt-operator.fullname" . }}
         prometheus.kubevirt.io: "true"
         {{- include "kubevirt-operator.labels" . | nindent 8 }}           
-      name: virt-operator
+      name: {{ include "kubevirt-operator.fullname" . }}
     spec:
       serviceAccountName: {{ include "kubevirt-operator.serviceAccountName" . }}
       {{- with .Values.nodeSelector }}

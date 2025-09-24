@@ -2,11 +2,11 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: cdi-operator
+  name: {{ include "cdi-operator.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    cdi.kubevirt.io: cdi-operator
-    name: cdi-operator
+    cdi.kubevirt.io: {{ include "cdi-operator.fullname" . }}
+    name: {{ include "cdi-operator.fullname" . }}
     operator.cdi.kubevirt.io: ""
     prometheus.cdi.kubevirt.io: "true"
     {{- include "cdi-operator.labels" . | nindent 4 }}     
@@ -15,7 +15,7 @@ spec:
   revisionHistoryLimit: {{ default .Values.revisionHistoryLimit "1" }}
   selector:
     matchLabels:
-      name: cdi-operator
+      name: {{ include "cdi-operator.fullname" . }}
       operator.cdi.kubevirt.io: ""  
   strategy:
     type: RollingUpdate  
@@ -24,8 +24,8 @@ spec:
       annotations:
         openshift.io/required-scc: restricted-v2    
       labels:
-        cdi.kubevirt.io: cdi-operator
-        name: cdi-operator
+        cdi.kubevirt.io: {{ include "cdi-operator.fullname" . }}
+        name: {{ include "cdi-operator.fullname" . }}
         operator.cdi.kubevirt.io: ""
         prometheus.cdi.kubevirt.io: "true" 
         {{- include "cdi-operator.labels" . | nindent 8 }}  

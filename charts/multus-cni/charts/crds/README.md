@@ -1,0 +1,1 @@
+# A subchart stores multus-cni CRDs

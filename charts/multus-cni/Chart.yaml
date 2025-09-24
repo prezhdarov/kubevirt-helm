@@ -1,0 +1,10 @@
+apiVersion: v2
+name: multus-cni
+description: A Helm chart top deploy multus-cni
+type: application
+version: 4.2.2
+appVersion: 4.2.2
+dependencies:
+- name: crds
+  version: "0.0.*"
+  condition: crds.plain

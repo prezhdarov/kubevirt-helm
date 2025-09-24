@@ -1,0 +1,34 @@
+fullnameOverride: ""
+serviceAccountName: ""
+
+revisionHistoryLimit: 2
+
+
+cniVersion: 0.3.1
+
+crds:
+  # Install and upgrade CRDs from normal template. If false crds will be installed according to helm rules - i.e. will not be installed :D 
+  enabled: true
+  # -- check if plain or templated CRDs should be created.
+  plain: false
+  # Keep CRDs after uninstall of this application. This will also keep the objects created with these CRDs. 
+  keep: true
+
+resources: 
+  requests:
+    cpu: "100m"
+    memory: "50Mi"
+  limits:
+    cpu: "100m"
+    memory: "50Mi"
+
+nodeSelector: {}
+  #kubernetes.io/os: linux
+
+affinity: {}
+
+tolerations:
+- operator: Exists
+  effect: NoSchedule
+- operator: Exists
+  effect: NoExecute
