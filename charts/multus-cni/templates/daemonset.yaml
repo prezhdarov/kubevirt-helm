@@ -7,8 +7,11 @@ metadata:
   labels:
     {{- include "multus-cni.labels" . | nindent 4 }}     
 spec:
-  strategy:
+  updateStrategy:
     type: RollingUpdate  
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
   selector:
     matchLabels:
       {{- include "multus-cni.selectorLabels" . | nindent 6}}
