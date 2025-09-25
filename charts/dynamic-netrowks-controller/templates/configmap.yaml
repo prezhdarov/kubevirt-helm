@@ -1,0 +1,14 @@
+---
+kind: ConfigMap
+apiVersion: v1
+metadata: 
+  name: {{ printf "%s-config" (include "dynamic-networks-controller.fullname" .) }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "dynamic-networks-controller.labels" . | nindent 4 }}  
+data:
+  dynamic-networks-config.json: |
+    {
+        "criSocketPath": "{{ printf "/host%s" .Values.criSocketPath }}",
+        "multusSocketPath": "{{ printf "/host%s" .Values.multusSocketPath }}"
+    }

@@ -1,0 +1,6 @@
+apiVersion: v2
+name: dynamic-networks-controller
+description: A Helm chart top deploy dynamic-networks-controller
+type: application
+version: 0.3.7
+appVersion: 0.3.7

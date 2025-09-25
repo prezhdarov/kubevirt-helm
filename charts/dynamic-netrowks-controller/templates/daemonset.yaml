@@ -1,0 +1,99 @@
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ include "dynamic-networks-controller.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "dynamic-networks-controller.labels" . | nindent 4 }}     
+spec:
+  updateStrategy:
+    type: RollingUpdate  
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      {{- include "dynamic-networks-controller.selectorLabels" . | nindent 6}}
+  template:
+    metadata:  
+      labels:
+        {{- include "dynamic-networks-controller.labels" . | nindent 8 }}  
+    spec:
+      serviceAccountName: {{ include "dynamic-networks-controller.serviceAccountName" . }}     
+      containers:
+      - name: dynamic-networks-controller
+        image: ghcr.io/k8snetworkplumbingwg/multus-dynamic-networks-controller:{{ printf "v%s" .Chart.AppVersion }}
+        command:
+        - /dynamic-networks-controller
+        args:
+        - "-config=/etc/dynamic-networks-controller/dynamic-networks-config.json"
+        - "-v=5"        
+        env:
+        - name: MULTUS_NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName        
+        {{- with .Values.resources }}          
+        resources:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}            
+        volumeMounts:
+        - name: dynamic-networks-controller-config-dir
+          mountPath: /etc/dynamic-networks-controller/
+          readOnly: true
+        - name: multus-server-socket
+          mountPath: {{ printf "/host%s" .Values.multusSocketPath }}
+        - name: cri-socket
+          mountPath: {{ printf "/host%s" .Values.criSocketPath }}
+        livenessProbe:
+          exec:
+              command:
+              - curl
+              - --fail
+              - --unix-socket
+              - /host/run/multus/multus.sock
+              - localhost/healthz
+          initialDelaySeconds: 15
+          periodSeconds: 5
+        readinessProbe:
+          exec:
+              command:
+              - curl
+              - --fail
+              - --unix-socket
+              - /host/run/multus/multus.sock
+              - localhost/healthz
+          initialDelaySeconds: 15
+          periodSeconds: 5                  
+        securityContext:
+          privileged: true
+        terminationMessagePolicy: FallbackToLogsOnError                        
+      terminationGracePeriodSeconds: 10      
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 6 }}
+      {{- end }}     
+      volumes:
+      - name: dynamic-networks-controller-config-dir
+        configMap:
+          name: {{ printf "%s-config" (include "dynamic-networks-controller.fullname" .) }}
+          items:
+            - key: dynamic-networks-config.json
+              path: dynamic-networks-config.json
+      - name: multus-server-socket
+        hostPath:
+          path: {{ .Values.multusSocketPath }}
+          type: Socket
+      - name: cri-socket
+        hostPath:
+          path: {{ .Values.criSocketPath }}
+          type: Socket                
