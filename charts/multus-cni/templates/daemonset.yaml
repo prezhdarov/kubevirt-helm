@@ -27,9 +27,12 @@ spec:
       - name: install-multus-binary
         image: ghcr.io/k8snetworkplumbingwg/multus-cni:{{ printf "v%s-thick" .Chart.AppVersion }}
         command:
-        - "sh"
-        - "-c"
-        - "cp /usr/src/multus-cni/bin/multus-shim /host/opt/cni/bin/multus-shim && cp /usr/src/multus-cni/bin/passthru /host/opt/cni/bin/passthru"
+        - /usr/src/multus-cni/bin/install_multus
+        args:
+        - -d
+        - /host/opt/cni/bin
+        - -t
+        - thick        
         resources:
           requests:
             cpu: "10m"
