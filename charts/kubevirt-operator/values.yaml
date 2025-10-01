@@ -15,6 +15,18 @@ resources:
     cpu: 10m
     memory: 450Mi
 
+# -- Annotations to be added to the deployment
+annotations: {}
+
+# -- Labels to be added to the deployment
+labels: {}
+
+# -- Annotations to be added to pod
+podAnnotations: {}
+
+# -- Labels to be added to pod
+podLabels: {}
+
 nodeSelector:
   kubernetes.io/os: linux
 
@@ -35,3 +47,5 @@ tolerations:
 - key: CriticalAddonsOnly
   operator: Exists
 
+# -- Add extra specs dynamically to this chart
+extraObjects: []
