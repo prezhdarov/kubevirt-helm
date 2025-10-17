@@ -3,29 +3,35 @@ kind: Deployment
 metadata:
   name: {{ include "cluster-network-addons-operator.fullname" . }}
   namespace: {{ .Release.Namespace }}  
+  {{- with .Values.annotations }}
   annotations:
-    networkaddonsoperator.network.kubevirt.io/version: {{ .Chart.AppVersion }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}  
   labels:
-    prometheus.cnao.io: "true"
-    {{- include "cluster-network-addons-operator.labels" . | nindent 4 }}      
+    {{- include "cluster-network-addons-operator.labels" . | nindent 4 }}
+    {{- with .Values.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}              
 spec:
   replicas: {{ default .Values.replicaCount "1" }}
   revisionHistoryLimit: {{ default .Values.revisionHistoryLimit "1" }}
   selector:
     matchLabels:
-      name: {{ include "cluster-network-addons-operator.fullname" . }}
+      {{- include "cluster-network-addons-operator.selectorLabels" . | nindent 6 }}   
   strategy:
     type: Recreate
   template:
     metadata:
+      name: {{ include "cluster-network-addons-operator.fullname" . }}   
+      {{- with .Values.podAnnotations }}
       annotations:
-        description: cluster-network-addons-operator manages the lifecycle of different
-          Kubernetes network components on top of Kubernetes cluster
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       labels:
-        name: {{ include "cluster-network-addons-operator.fullname" . }}
-        prometheus.cnao.io: "true"
-        hco.kubevirt.io/allow-access-cluster-services: ""
-        hco.kubevirt.io/allow-prometheus-access: ""
+        {{- include "cluster-network-addons-operator.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}  
     spec:
       serviceAccountName: {{ include "cluster-network-addons-operator.serviceAccountName" . }}  
       priorityClassName: system-cluster-critical
@@ -139,3 +145,7 @@ spec:
             drop:
             - ALL
         terminationMessagePolicy: FallbackToLogsOnError
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 6 }}
+      {{- end }}        

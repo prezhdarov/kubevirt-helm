@@ -15,6 +15,7 @@ metadata:
     {{- end }}        
 spec:
   replicas: {{ default .Values.replicaCount "2" }}
+  revisionHistoryLimit: {{ default .Values.revisionHistoryLimit "1" }}  
   selector:
     matchLabels:
       {{- include "kubevirt-operator.selectorLabels" . | nindent 6 }}         

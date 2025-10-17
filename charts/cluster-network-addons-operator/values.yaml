@@ -19,9 +19,26 @@ resources:
 rbacProxyResources:
   requests:
     cpu: 10m
-    memory: 20Mi
+    memory: 20Mi    
+
+# -- Annotations to be added to the deployment
+annotations: {}
+
+# -- Labels to be added to the deployment
+labels: {}
+
+# -- Annotations to be added to pod
+podAnnotations: {}
+
+# -- Labels to be added to pod
+podLabels: {}
 
 nodeSelector:
   kubernetes.io/os: linux
 
-affinity: {}    
+affinity: {}
+
+tolerations: {}
+
+# -- Add extra specs dynamically to this chart
+extraObjects: []

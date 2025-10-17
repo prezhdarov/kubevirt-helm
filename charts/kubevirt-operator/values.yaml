@@ -1,6 +1,7 @@
 fullnameOverride: ""
 serviceAccountName: ""
 replicaCount: 2
+revisionHistoryLimit: 2
 
 crds:
   # Install and upgrade CRDs from normal template. If false crds will be installed according to helm rules - i.e. will not be installed :D 
@@ -30,18 +31,7 @@ podLabels: {}
 nodeSelector:
   kubernetes.io/os: linux
 
-affinity:
-  podAntiAffinity:
-    preferredDuringSchedulingIgnoredDuringExecution:
-    - podAffinityTerm:
-        labelSelector:
-          matchExpressions:
-          - key: kubevirt.io
-            operator: In
-            values:
-            - virt-operator
-        topologyKey: kubernetes.io/hostname
-      weight: 1
+affinity: {}
 
 tolerations:
 - key: CriticalAddonsOnly
