@@ -33,9 +33,7 @@ nodeSelector:
 
 affinity: {}    
 
-tolerations:
-- key: CriticalAddonsOnly
-  operator: Exists
+tolerations: []
 
 # -- Add extra specs dynamically to this chart
 extraObjects: []

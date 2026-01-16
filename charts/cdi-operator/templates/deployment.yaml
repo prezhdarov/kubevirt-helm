@@ -75,10 +75,27 @@ spec:
         - containerPort: 8443
           name: metrics
           protocol: TCP
+        - containerPort: 8444
+          name: health
+          protocol: TCP          
         {{- with .Values.resources }}          
         resources:
           {{- toYaml . | nindent 10 }}
         {{- end }}
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8444
+            scheme: HTTP
+          initialDelaySeconds: 5
+          timeoutSeconds: 10   
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: 8444
+            scheme: HTTP
+          initialDelaySeconds: 5
+          timeoutSeconds: 10               
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
