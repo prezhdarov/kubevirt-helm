@@ -11,6 +11,8 @@ crds:
   # Keep CRDs after uninstall of this application. This will also keep the objects created with these CRDs. 
   keep: true
 
+logLevel: 0
+
 resources: 
   requests:
     cpu: 50m
