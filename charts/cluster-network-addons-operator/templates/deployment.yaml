@@ -47,33 +47,32 @@ spec:
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}            
+      {{- $images := include "cluster-network-addons-operator.addonImages" . | fromYaml }}
       containers:
       - name: cluster-network-addons-operator
         image: quay.io/kubevirt/cluster-network-addons-operator:v{{ .Chart.AppVersion }}
-        imagePullPolicy: Always      
+        imagePullPolicy: Always
         env:
         - name: MULTUS_IMAGE
-          value: ghcr.io/k8snetworkplumbingwg/multus-cni@sha256:e93af9e533cc16ca7847aeec3b516c9b1e8891c2b95c727991e94c9b59c4970e
+          value: {{ $images.multus }}
         - name: MULTUS_DYNAMIC_NETWORKS_CONTROLLER_IMAGE
-          value: ghcr.io/k8snetworkplumbingwg/multus-dynamic-networks-controller@sha256:2a2bb32c0ea8b232b3dbe81c0323a107e8b05f8cad06704fca2efd0d993a87be
+          value: {{ $images.multusDynamicNetworksController }}
         - name: LINUX_BRIDGE_IMAGE
-          value: quay.io/kubevirt/cni-default-plugins@sha256:976a24392c2a096c38c2663d234b2d3131f5c24558889196d30b9ac1b6716788
+          value: {{ $images.linuxBridge }}
         - name: LINUX_BRIDGE_MARKER_IMAGE
-          value: quay.io/kubevirt/bridge-marker@sha256:f9611ec10bb4aec44b0ec19f9b9d748a36255c089a1f59bc76e5fc37acc0fed2
+          value: {{ $images.linuxBridgeMarker }}
         - name: OVS_CNI_IMAGE
-          value: ghcr.io/k8snetworkplumbingwg/ovs-cni-plugin@sha256:435f374b434b3bc70a5cfaba0011fdcf5f433d96b98b06d29306cbd8db3a8c21
+          value: {{ $images.ovsCNI }}
         - name: KUBEMACPOOL_IMAGE
-          value: quay.io/kubevirt/kubemacpool@sha256:e06a2a0c642ee648097d2fff58098c99799c26d1a6f7ca5272a0ff0e474af9fb
+          value: {{ $images.kubeMacPool }}
         - name: MACVTAP_CNI_IMAGE
-          value: quay.io/kubevirt/macvtap-cni@sha256:af31faae20c0128a469dd4c1aa866d6bf78d1d2f5972127adf4c9438dcde10f4
-        - name: KUBE_RBAC_PROXY_IMAGE
-          value: quay.io/brancz/kube-rbac-proxy@sha256:e6a323504999b2a4d2a6bf94f8580a050378eba0900fd31335cf9df5787d9a9b
+          value: {{ $images.macVTapCNI }}
         - name: KUBE_SECONDARY_DNS_IMAGE
-          value: ghcr.io/kubevirt/kubesecondarydns@sha256:f5fe9c98fb6d7e5e57a6df23fe82e43e65db5953d76af44adda9ab40c46ad0bf
+          value: {{ $images.kubeSecondaryDNS }}
         - name: CORE_DNS_IMAGE
-          value: registry.k8s.io/coredns/coredns@sha256:a0ead06651cf580044aeb0a0feba63591858fb2e43ade8c9dea45a6a89ae7e5e
+          value: {{ $images.coreDNS }}
         - name: KUBEVIRT_IPAM_CONTROLLER_IMAGE
-          value: ghcr.io/kubevirt/ipam-controller@sha256:69b25271d1ad2521f38f5fa8b9623973ad7c74f33f88d17c0ebc9882ef9c2c5e
+          value: {{ $images.kubeVirtIPAMController }}
         - name: OPERATOR_IMAGE
           value: quay.io/kubevirt/cluster-network-addons-operator:v{{ .Chart.AppVersion }}
         - name: OPERATOR_NAME
@@ -101,9 +100,13 @@ spec:
           value: https://kubevirt.io/monitoring/runbooks/%s
         - name: CNAO_LOG_LEVEL
           value: {{ .Values.logLevel | quote }}          
-        ports:
-        - containerPort: 8081
-          name: healthprobe          
+        ports:        
+        - name: healthprobe          
+          containerPort: 8081
+          protocol: TCP    
+        - name: metrics
+          containerPort: 8443
+          protocol: TCP                  
         {{- with .Values.resources }}          
         resources:
           {{- toYaml . | nindent 10 }}
@@ -120,27 +123,6 @@ spec:
             port: healthprobe
           initialDelaySeconds: 5
           periodSeconds: 10                  
-        securityContext:
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop:
-            - ALL
-        terminationMessagePolicy: FallbackToLogsOnError
-      - name: kube-rbac-proxy
-        image: quay.io/brancz/kube-rbac-proxy@sha256:e6a323504999b2a4d2a6bf94f8580a050378eba0900fd31335cf9df5787d9a9b
-        imagePullPolicy: Always
-        args:
-        - --logtostderr
-        - --secure-listen-address=:8443
-        - --upstream=http://127.0.0.1:8080
-        ports:
-        - containerPort: 8443
-          name: metrics
-          protocol: TCP
-        {{- with .Values.resrbacProxyResources }}          
-        resources:
-          {{- toYaml . | nindent 10 }}
-        {{- end }}
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
