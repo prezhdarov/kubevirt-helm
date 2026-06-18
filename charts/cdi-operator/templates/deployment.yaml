@@ -53,19 +53,19 @@ spec:
         - name: OPERATOR_VERSION
           value: v{{ .Chart.AppVersion }}
         - name: CONTROLLER_IMAGE
-          value: quay.io/kubevirt/cdi-controller:v{{ .Chart.AppVersion }}
+          value: {{ .Values.images.controller | default (printf "quay.io/kubevirt/cdi-controller:v%s" .Chart.AppVersion) }}
         - name: IMPORTER_IMAGE
-          value: quay.io/kubevirt/cdi-importer:v{{ .Chart.AppVersion }}
+          value: {{ .Values.images.importer | default (printf "quay.io/kubevirt/cdi-importer:v%s" .Chart.AppVersion) }}
         - name: CLONER_IMAGE
-          value: quay.io/kubevirt/cdi-cloner:v{{ .Chart.AppVersion }}
+          value: {{ .Values.images.cloner | default (printf "quay.io/kubevirt/cdi-cloner:v%s" .Chart.AppVersion) }}
         - name: OVIRT_POPULATOR_IMAGE
-          value: quay.io/kubevirt/cdi-importer:v{{ .Chart.AppVersion }}
+          value: {{ .Values.images.ovirtPopulator | default (printf "quay.io/kubevirt/cdi-importer:v%s" .Chart.AppVersion) }}
         - name: APISERVER_IMAGE
-          value: quay.io/kubevirt/cdi-apiserver:v{{ .Chart.AppVersion }}
+          value: {{ .Values.images.apiServer | default (printf "quay.io/kubevirt/cdi-apiserver:v%s" .Chart.AppVersion) }}
         - name: UPLOAD_SERVER_IMAGE
-          value: quay.io/kubevirt/cdi-uploadserver:v{{ .Chart.AppVersion }}
+          value: {{ .Values.images.uploadServer | default (printf "quay.io/kubevirt/cdi-uploadserver:v%s" .Chart.AppVersion) }}
         - name: UPLOAD_PROXY_IMAGE
-          value: quay.io/kubevirt/cdi-uploadproxy:v{{ .Chart.AppVersion }}
+          value: {{ .Values.images.uploadProxy | default (printf "quay.io/kubevirt/cdi-uploadproxy:v%s" .Chart.AppVersion) }}
         - name: VERBOSITY
           value: "1"
         - name: PULL_POLICY

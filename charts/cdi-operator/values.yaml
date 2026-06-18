@@ -11,6 +11,16 @@ crds:
   # Keep CRDs after uninstall of this application. This will also keep the objects created with these CRDs. 
   keep: true
 
+images: {}
+#  controller:
+#  importer:
+#  cloner:
+#  ovirtPopulator:
+#  apiServer:
+#  uploadServer:
+#  uploadProxy:
+
+
 resources: 
   requests:
     cpu: 100m
