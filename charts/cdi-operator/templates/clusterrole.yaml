@@ -5,7 +5,7 @@ metadata:
   name: {{ include "cdi-operator.fullname" . }}
   labels:
     operator.cdi.kubevirt.io: ""
-    {{- include "cdi-operator.labels" . | nindent 4 }}  
+    {{- include "cdi-operator.labels" . | nindent 4 }}
 rules:
 - apiGroups:
   - rbac.authorization.k8s.io
@@ -367,6 +367,12 @@ rules:
   verbs:
   - update
 - apiGroups:
+  - authentication.k8s.io
+  resources:
+  - tokenreviews
+  verbs:
+  - create
+- apiGroups:
   - authorization.k8s.io
   resources:
   - subjectaccessreviews
@@ -386,3 +392,13 @@ rules:
   - get
   - list
   - update
+  - patch
+- nonResourceURLs:
+  - /metrics
+  verbs:
+  - get
+- nonResourceURLs:
+  - /debug/pprof
+  - /debug/pprof/*
+  verbs:
+  - get
