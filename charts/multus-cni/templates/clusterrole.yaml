@@ -4,7 +4,7 @@ kind: ClusterRole
 metadata:
   name: {{ include "multus-cni.fullname" . }}
   labels:
-    {{- include "multus-cni.labels" . | nindent 4 }}  
+    {{- include "multus-cni.labels" . | nindent 4 }}
 rules:
 - apiGroups: ["k8s.cni.cncf.io"]
   resources:
@@ -21,6 +21,15 @@ rules:
     - list
     - update
     - watch
+- apiGroups:
+    - "resource.k8s.io"
+  resources:
+    - resourceclaims
+    - resourceclaims/status
+    - resourceslices
+  verbs:
+    - get
+    - list
 - apiGroups:
     - ""
     - events.k8s.io

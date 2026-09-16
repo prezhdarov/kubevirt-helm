@@ -5,10 +5,10 @@ metadata:
   name: {{ include "multus-cni.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "multus-cni.labels" . | nindent 4 }}     
+    {{- include "multus-cni.labels" . | nindent 4 }}
 spec:
   updateStrategy:
-    type: RollingUpdate  
+    type: RollingUpdate
     rollingUpdate:
       maxSurge: 0
       maxUnavailable: 1
@@ -16,9 +16,9 @@ spec:
     matchLabels:
       {{- include "multus-cni.selectorLabels" . | nindent 6}}
   template:
-    metadata:  
+    metadata:
       labels:
-        {{- include "multus-cni.labels" . | nindent 8 }}  
+        {{- include "multus-cni.labels" . | nindent 8 }}
     spec:
       serviceAccountName: {{ include "multus-cni.serviceAccountName" . }}
       hostNetwork: true
@@ -32,7 +32,7 @@ spec:
         - -d
         - /host/opt/cni/bin
         - -t
-        - thick        
+        - thick
         resources:
           requests:
             cpu: "10m"
@@ -40,10 +40,10 @@ spec:
         volumeMounts:
         - name: cnibin
           mountPath: /host/opt/cni/bin
-          mountPropagation: Bidirectional              
+          mountPropagation: Bidirectional
         securityContext:
           privileged: true
-        terminationMessagePolicy: FallbackToLogsOnError      
+        terminationMessagePolicy: FallbackToLogsOnError
       containers:
       - name: kube-multus
         image: ghcr.io/k8snetworkplumbingwg/multus-cni:{{ printf "v%s-thick" .Chart.AppVersion }}
@@ -53,11 +53,11 @@ spec:
         - name: MULTUS_NODE_NAME
           valueFrom:
             fieldRef:
-              fieldPath: spec.nodeName        
-        {{- with .Values.resources }}          
+              fieldPath: spec.nodeName
+        {{- with .Values.resources }}
         resources:
           {{- toYaml . | nindent 10 }}
-        {{- end }}            
+        {{- end }}
         volumeMounts:
         - name: cni
           mountPath: /host/etc/cni/net.d
@@ -85,8 +85,8 @@ spec:
           name: multus-conf-dir
         securityContext:
           privileged: true
-        terminationMessagePolicy: FallbackToLogsOnError                        
-      terminationGracePeriodSeconds: 10      
+        terminationMessagePolicy: FallbackToLogsOnError
+      terminationGracePeriodSeconds: 30
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -98,7 +98,7 @@ spec:
       {{- with .Values.tolerations }}
       tolerations:
         {{- toYaml . | nindent 6 }}
-      {{- end }}     
+      {{- end }}
       volumes:
       - name: cni
         hostPath:
@@ -132,4 +132,4 @@ spec:
           path: /run/netns/
       - name: multus-conf-dir
         hostPath:
-          path: /etc/cni/multus/net.d                   
+          path: /etc/cni/multus/net.d
