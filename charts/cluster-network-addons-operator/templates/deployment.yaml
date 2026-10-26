@@ -2,27 +2,27 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "cluster-network-addons-operator.fullname" . }}
-  namespace: {{ .Release.Namespace }}  
+  namespace: {{ .Release.Namespace }}
   {{- with .Values.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
-  {{- end }}  
+  {{- end }}
   labels:
     {{- include "cluster-network-addons-operator.labels" . | nindent 4 }}
     {{- with .Values.labels }}
     {{- toYaml . | nindent 4 }}
-    {{- end }}              
+    {{- end }}
 spec:
   replicas: {{ default .Values.replicaCount "1" }}
   revisionHistoryLimit: {{ default .Values.revisionHistoryLimit "1" }}
   selector:
     matchLabels:
-      {{- include "cluster-network-addons-operator.selectorLabels" . | nindent 6 }}   
+      {{- include "cluster-network-addons-operator.selectorLabels" . | nindent 6 }}
   strategy:
     type: Recreate
   template:
     metadata:
-      name: {{ include "cluster-network-addons-operator.fullname" . }}   
+      name: {{ include "cluster-network-addons-operator.fullname" . }}
       {{- with .Values.podAnnotations }}
       annotations:
         {{- toYaml . | nindent 8 }}
@@ -31,9 +31,9 @@ spec:
         {{- include "cluster-network-addons-operator.labels" . | nindent 8 }}
         {{- with .Values.podLabels }}
           {{- toYaml . | nindent 8 }}
-        {{- end }}  
+        {{- end }}
     spec:
-      serviceAccountName: {{ include "cluster-network-addons-operator.serviceAccountName" . }}  
+      serviceAccountName: {{ include "cluster-network-addons-operator.serviceAccountName" . }}
       priorityClassName: system-cluster-critical
       securityContext:
         runAsNonRoot: true
@@ -46,33 +46,18 @@ spec:
       {{- with .Values.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
-      {{- end }}            
-      {{- $images := include "cluster-network-addons-operator.addonImages" . | fromYaml }}
+      {{- end }}
       containers:
       - name: cluster-network-addons-operator
         image: quay.io/kubevirt/cluster-network-addons-operator:v{{ .Chart.AppVersion }}
         imagePullPolicy: Always
         env:
-        - name: MULTUS_IMAGE
-          value: {{ $images.multus }}
-        - name: MULTUS_DYNAMIC_NETWORKS_CONTROLLER_IMAGE
-          value: {{ $images.multusDynamicNetworksController }}
-        - name: LINUX_BRIDGE_IMAGE
-          value: {{ $images.linuxBridge }}
-        - name: LINUX_BRIDGE_MARKER_IMAGE
-          value: {{ $images.linuxBridgeMarker }}
-        - name: OVS_CNI_IMAGE
-          value: {{ $images.ovsCNI }}
-        - name: KUBEMACPOOL_IMAGE
-          value: {{ $images.kubeMacPool }}
-        - name: MACVTAP_CNI_IMAGE
-          value: {{ $images.macVTapCNI }}
-        - name: KUBE_SECONDARY_DNS_IMAGE
-          value: {{ $images.kubeSecondaryDNS }}
-        - name: CORE_DNS_IMAGE
-          value: {{ $images.coreDNS }}
-        - name: KUBEVIRT_IPAM_CONTROLLER_IMAGE
-          value: {{ $images.kubeVirtIPAMController }}
+        {{- range $key, $value := .Values.images }}
+        {{- if $value }}
+        - name: {{ printf "%s_IMAGE" (upper (regexReplaceAll "([a-z0-9])([A-Z])" $key "${1}_${2}" )) }}
+          value: {{ $value }}
+        {{- end }}
+        {{- end }}
         - name: OPERATOR_IMAGE
           value: quay.io/kubevirt/cluster-network-addons-operator:v{{ .Chart.AppVersion }}
         - name: OPERATOR_NAME
@@ -99,15 +84,15 @@ spec:
         - name: RUNBOOK_URL_TEMPLATE
           value: https://kubevirt.io/monitoring/runbooks/%s
         - name: CNAO_LOG_LEVEL
-          value: {{ .Values.logLevel | quote }}          
-        ports:        
-        - name: healthprobe          
+          value: {{ .Values.logLevel | quote }}
+        ports:
+        - name: healthprobe
           containerPort: 8081
-          protocol: TCP    
+          protocol: TCP
         - name: metrics
           containerPort: 8443
-          protocol: TCP                  
-        {{- with .Values.resources }}          
+          protocol: TCP
+        {{- with .Values.resources }}
         resources:
           {{- toYaml . | nindent 10 }}
         {{- end }}
@@ -122,7 +107,7 @@ spec:
             path: /readyz
             port: healthprobe
           initialDelaySeconds: 5
-          periodSeconds: 10                  
+          periodSeconds: 10
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
@@ -132,4 +117,4 @@ spec:
       {{- with .Values.tolerations }}
       tolerations:
         {{- toYaml . | nindent 6 }}
-      {{- end }}        
+      {{- end }}
