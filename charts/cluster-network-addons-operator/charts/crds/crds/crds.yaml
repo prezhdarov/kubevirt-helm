@@ -3347,4 +3347,3 @@ spec:
     storage: false
     subresources:
       status: {}
-  preserveUnknownFields: false
