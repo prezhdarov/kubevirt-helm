@@ -1,20 +1,28 @@
 ---
 kind: ConfigMap
 apiVersion: v1
-metadata: 
+metadata:
   name: {{ printf "%s-daemon-config" (include "multus-cni.fullname" .) }}
   namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "multus-cni.labels" . | nindent 4 }}  
+    {{- include "multus-cni.labels" . | nindent 4 }}
 data:
   daemon-config.json: |
     {
         "chrootDir": "/hostroot",
-        "cniVersion": "{{ .Values.cniVersion }}",
-        "logLevel": "verbose",
-        "logToStderr": true,
+        "cniVersion": "{{ .Values.config.cni.version }}",
+        {{- with .Values.config.namespaceIsolation }}
+        {{- if .enabled }}
+        "namespaceIsolation": true,
+        "globalNamespaces": {{ .globalNamespaces | quote }},
+        {{- end }}
+        {{- end }}
+        {{- with .Values.config.log }}
+        "logLevel": {{ .level | quote }},
+        "logToStderr": {{ .toStderr | default true }},
+        {{- end }}
         "cniConfigDir": "/host/etc/cni/net.d",
         "multusAutoconfigDir": "/host/etc/cni/net.d",
         "multusConfigFile": "auto",
         "socketDir": "/host/run/multus/"
-    } 
+    }

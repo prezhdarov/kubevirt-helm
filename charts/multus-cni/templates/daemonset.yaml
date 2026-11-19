@@ -21,6 +21,7 @@ spec:
         {{- include "multus-cni.labels" . | nindent 8 }}
     spec:
       serviceAccountName: {{ include "multus-cni.serviceAccountName" . }}
+      priorityClassName: system-node-critical
       hostNetwork: true
       hostPID: true
       initContainers:
